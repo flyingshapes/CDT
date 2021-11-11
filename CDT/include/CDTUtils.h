@@ -91,6 +91,14 @@ using boost::random::mt19937;
 namespace CDT
 {
 
+/**
+ * Type used for storing layer depths for triangles
+ * @note LayerDepth should support 60K+ layers, which could be to much or
+ * too little for some use cases. Feel free to re-define this typedef.
+ */
+typedef unsigned short LayerDepth;
+typedef LayerDepth BoundaryOverlapCount;
+
 /// 2D vector
 template <typename T>
 struct CDT_EXPORT V2d
@@ -144,6 +152,11 @@ BOOST_STRONG_TYPEDEF(IndexSizeType, VertInd);
 /// Triangle index
 BOOST_STRONG_TYPEDEF(IndexSizeType, TriInd);
 #endif
+
+/// Constant representing no valid neighbor for a triangle
+const static TriInd noNeighbor(std::numeric_limits<TriInd>::max());
+/// Constant representing no valid vertex for a triangle
+const static VertInd noVertex(std::numeric_limits<VertInd>::max());
 
 typedef std::vector<TriInd> TriIndVec;  ///< Vector of triangle indices
 typedef array<VertInd, 3> VerticesArr3; ///< array of three vertex indices

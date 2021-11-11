@@ -15,6 +15,7 @@
 
 #include "CDT.hpp"
 #include "CDTUtils.hpp"
+#include "Triangulation.hpp"
 #include "InitializeWithGrid.h"
 #include "VerifyTopology.h"
 
