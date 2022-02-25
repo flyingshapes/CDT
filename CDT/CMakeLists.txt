@@ -24,8 +24,15 @@ option(CDT_USE_BOOST
     and performance tweaks (e.g., using boost::flat_set)"
     OFF)
 
-option(CDT_USE_AS_COMPILED_LIBRARY
-    "If enabled templates for float and double will be instantiated and compiled into a library")
+option(CDT_USE_AS_STATIC_LIBRARY
+    "If enabled templates for float and double will be instantiated and compiled into a static library"
+        OFF)
+
+option(CDT_USE_AS_SHARED_LIBRARY
+        "If enabled templates for float and double will be instantiated and compiled into a shared library"
+        OFF )
+
+option(CDT_DISABLE_INSTALL "If enabled does not create a install target" OFF)
 
 option(CDT_USE_64_BIT_INDEX_TYPE
     "If enabled 64bits are used to store vertex/triangle index types. Otherwise 32bits are used (up to 4.2bn items)"
@@ -44,8 +51,10 @@ else()
 endif()
 
 message(STATUS "CDT_USE_BOOST is ${CDT_USE_BOOST}")
-message(STATUS "CDT_USE_AS_COMPILED_LIBRARY is ${CDT_USE_AS_COMPILED_LIBRARY}")
+message(STATUS "CDT_USE_AS_STATIC_LIBRARY is ${CDT_USE_AS_STATIC_LIBRARY}")
+message(STATUS "CDT_USE_AS_SHARED_LIBRARY is ${CDT_USE_AS_SHARED_LIBRARY}")
 message(STATUS "CDT_USE_64_BIT_INDEX_TYPE is ${CDT_USE_64_BIT_INDEX_TYPE}")
+message(STATUS "CDT_DISABLE_INSTALL is ${CDT_DISABLE_INSTALL}")
 
 # Use boost for c++98 versions of c++11 containers or for Boost::rtree
 if(CDT_USE_BOOST)
@@ -58,6 +67,15 @@ set(cdt_include_dirs
     include
     extras
 )
+
+if(CDT_USE_AS_STATIC_LIBRARY)
+    set(CDT_USE_AS_COMPILED_LIBRARY ON)
+elseif(CDT_USE_AS_SHARED_LIBRARY)
+    set(CDT_USE_AS_COMPILED_LIBRARY ON)
+else()
+    set(CDT_USE_AS_COMPILED_LIBRARY OFF)
+endif()
+
 
 if(CDT_USE_AS_COMPILED_LIBRARY)
     set(cdt_scope PUBLIC)
@@ -76,7 +94,11 @@ if(CDT_USE_AS_COMPILED_LIBRARY)
         extras/VerifyTopology.h
         extras/InitializeWithGrid.h
     )
-    add_library(${PROJECT_NAME} ${cdt_sources} ${cdt_headers})
+    if(CDT_USE_AS_STATIC_LIBRARY)
+        add_library(${PROJECT_NAME} STATIC ${cdt_sources} ${cdt_headers})
+    else()
+        add_library(${PROJECT_NAME} SHARED ${cdt_sources} ${cdt_headers})
+    endif()
     # Set symbols visibility to hidden by default
     set_target_properties(
         ${PROJECT_NAME}
@@ -132,7 +154,7 @@ endif()
 # -------------
 # installation
 # -------------
-
+if(NOT CDT_DISABLE_INSTALL)
 
 include(GNUInstallDirs)
 
@@ -157,6 +179,8 @@ install(
 )
 
 install(EXPORT ${PROJECT_NAME}Config NAMESPACE CDT:: DESTINATION cmake)
+
+endif()
 
 # ------------
 # documentation
