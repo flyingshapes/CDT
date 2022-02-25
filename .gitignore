@@ -1,6 +1,8 @@
 # This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
 
+cmake-build*/
+cmake-install*/
 build/
 *~
 *.autosave
