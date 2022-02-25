@@ -583,6 +583,7 @@ void Triangulation<T, TNearPointLocator>::insertEdges(
 //-----
 // API
 //-----
+#if not defined(CDT_USE_AS_COMPILED_LIBRARY) or defined(CDT_EXPORTS)
 template <
     typename T,
     typename TVertexIter,
@@ -649,6 +650,7 @@ DuplicatesInfo RemoveDuplicatesAndRemapEdges(
     RemapEdges(edges, di.mapping);
     return di;
 }
+#endif //#if defined(CDT_STATIC_DEFINE) or defined(CDT_EXPORTS)
 
 } // namespace CDT
 
